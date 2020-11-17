@@ -27,20 +27,22 @@ const getFlightInfo = (flightInformation) => {
         // If the flight has a latitude and longitude, add it to the array
         if (flightInformation.data.data[i].live != null) {
             flightObj.airline = flightInformation.data.data[i].airline.name;
-            flightObj.number = flightInformation.data.data[i].flight.number;
+            flightObj.flightNumber = flightInformation.data.data[i].flight.number;
             flightObj.departureAirport =
                 flightInformation.data.data[i].departure.airport;
             flightObj.arrivalAirport = flightInformation.data.data[i].arrival.airport;
             flightObj.latitude = flightInformation.data.data[i].live.latitude;
             flightObj.longitude = flightInformation.data.data[i].live.longitude;
+            let epochTime = new Date().getTime();
+            flightObj.timeUTC = new Date(epochTime);
 
             // Push to array here
             flightsArray.push(flightObj);
         }
     }
     // Logging
-    // console.log(flightsArray);
-    // console.log(flightsArray.length);
+    console.log(flightsArray);
+    //console.log(flightsArray.length);
     proximityFlights(flightsArray);
 };
 
@@ -55,25 +57,36 @@ const getDistanceBetweenFlightAndUser = (lat1, long1, lat2, long2) => {
     return geometry.computeDistanceBetween(latlong1, latlong2) / 1609;
 };
 
+// first 2 params will be input from user, last 2 params are coordinates of flight
+// want to check if the flight is within a certain distance of the user, if the distance
+// is too big, don't show certain flights
 // Returns 5.7 miles away from user
 console.log(
     getDistanceBetweenFlightAndUser(34.183652, -84.558952, 34.183652, -84.658952)
 );
-console.log(flightsArray);
 
 // go through flights and look at ones that are close
 const proximityFlights = (arr) => {
     // get array, loop through and look at lat/long
-    // compare to lat/longs from user coordinates 
+    // compare to lat/longs from user coordinates
     // lat 34.183652
     // long -84.558952
     for (let i = 0; i < arr.length; i++) {
         let tempLat = arr[i].latitude;
         let tempLong = arr[i].longitude;
-        let distance = getDistanceBetweenFlightAndUser(34.183652, -84.558952, tempLat, tempLong);
+        let distance = getDistanceBetweenFlightAndUser(
+            34.183652,
+            -84.558952,
+            tempLat,
+            tempLong
+        );
 
-        console.log(`Distance between user and flight number ${arr[i].number} from ${arr[i].departureAirport} to ${arr[i].arrivalAirport} is: ${distance}`);
+        console.log(
+            `Distance between user and flight #${arr[i].flightNumber} from ${arr[i].departureAirport} to ${arr[i].arrivalAirport} is: ${distance} miles.`
+        );
     }
-}
+};
 
 proximityFlights(flightsArray);
+// see if i can use that upper/lower bound technique to scan any flight in area, not just those departing from atl
+// convert utc to local
