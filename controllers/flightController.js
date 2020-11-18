@@ -1,11 +1,9 @@
 const axios = require("axios");
 const geometry = require("spherical-geometry-js");
 
-const strings = require('../resources/strings');
-
-let flightsArray = [];
-
+// Run when user make a request
 exports.getFlights = (req, res) => {
+    // If all the params were supplied
     if(req.body.longitude && req.body.latitude && req.body.distance) {
         let user_longitude = req.body.longitude;
         let user_latitude = req.body.latitude;
@@ -14,127 +12,69 @@ exports.getFlights = (req, res) => {
         let currentFlights = [];
         let previousFlights = []
 
-        // get curent flights
-        axios
-            .get(strings.aviationstack.endpoint)
+        // Opensky needs a bounding box to filter flights but we have a radius
+        // so we need to create a square around the user.
+        // Opensky asks for top right and botton left corners
+        userLatLang =  new geometry.LatLng(user_latitude, user_longitude);
+
+        // Find the distance from the user location to a corner of the bounding square
+        // This makes a right triangle so use Pythagorean theorem to calculate hypotenuse
+        leg_length = Math.sqrt(2 * user_distance * user_distance) * 1609.34;
+
+        // Top right corner of bounding square
+        top_right = geometry.computeOffset(userLatLang, leg_length, 45);
+
+        // Botton Left corner of bounding square
+        bottom_left = geometry.computeOffset(userLatLang, leg_length, 225);
+
+         // get curent flights
+        axios.get(`https://opensky-network.org/api/states/all?lamin=${bottom_left.lat()}&lomin=${bottom_left.lng()}&lamax=${top_right.lat()}&lomax=${top_right.lng()}`)
             .then((response) => {
-                currentFlights = getFlightInfo(response, user_longitude, user_latitude, user_distance);
+                currentFlights = getFlightInfo(response);
 
                 res.status(200).send({
-                    current_flights: currentFlights,
-                    previous_flights: previousFlights
+                    flights: {
+                        current_flights: currentFlights,
+                        previous_flights: previousFlights,
+                    }
                 });
             })
             .catch((error) => {
                 console.log(error);
-                res.res.sendStatus(500)
+                res.sendStatus(500)
         });
     } else {
-        res.sendStatus(500)
+        res.sendStatus(400)
     }
 }
 
-// // Get flight information from active planes
-// // Should probably narrow this list down, good for now
-const getFlightInfo = (flights, user_longitude, user_latitude, user_distance) => {
+// Get flight information from active planes
+const getFlightInfo = (flights) => {
     let currentFlights = [];
+    let states = flights.data.states
 
-    flights.data.data.forEach(flight => {
-        let flightObj = {};
-
-        // If the flight has a latitude and longitude, add it to the array
-        if (flight.live != null) {
-            let lat = flight.live.latitude;
-            let long = flight.live.longitude;
-
-            let distance = getDistanceBetweenFlightAndUser(user_latitude, user_longitude, lat, long);
-
-            if(distance <= user_distance || true) {
-                let epochTime = new Date().getTime();
-                flightObj.timeUTC = new Date(epochTime);
-                flightObj.airline = flight.airline.name;
-                flightObj.flight_iata = flight.flight.iata
-                flightObj.origin = flight.departure.airport;
-                flightObj.destination = flight.arrival.airport;
-                flightObj.latitude = flight.live.latitude;
-                flightObj.longitude = flight.live.longitude;
-                flightObj.distance = distance;
+    // Check if any flights we returned
+    if(states !== null) {
+        states.forEach(flight => {
+            let flightObj = {};
     
-                currentFlights.push(flightObj);
-            }
-        }
-    });
+            let epochTime = new Date().getTime();
+            flightObj.timeUTC = new Date(epochTime);
 
-    // for (let i = 0; i < flightInformation.data.data.length; i++) {
-    //     // Flight object to store flight information. Is pushed to flightArray[]
-    //     let flightObj = {};
+            // Opensky uses arrays to return data
+            // Check the documentation to see what the indexs mean
+            // https://opensky-network.org/apidoc/rest.html#operation
+            flightObj.heading = flight[10];
+            flightObj.callsign = flight[1];
+            flightObj.origin_country = flight[2];
+            flightObj.latitude = flight[6];
+            flightObj.longitude = flight[5];
 
-    //     // If the flight has a latitude and longitude, add it to the array
-    //     if (flightInformation.data.data[i].live != null) {
-    //         flightObj.airline = flightInformation.data.data[i].airline.name;
-    //         flightObj.flightNumber = flightInformation.data.data[i].flight.number;
-    //         flightObj.departureAirport =
-    //             flightInformation.data.data[i].departure.airport;
-    //         flightObj.arrivalAirport = flightInformation.data.data[i].arrival.airport;
-    //         flightObj.latitude = flightInformation.data.data[i].live.latitude;
-    //         flightObj.longitude = flightInformation.data.data[i].live.longitude;
-    //         let epochTime = new Date().getTime();
-    //         flightObj.timeUTC = new Date(epochTime);
+            // We don't need to filter distances because opensky already did that
 
-    //         // Push to array here
-    //         currentFlights.push(flightObj);
-    //     }
-    // }
-    // // Logging
-    // console.log(flightsArray);
-    // //console.log(flightsArray.length);
-    // proximityFlights(flightsArray);
-
-    console.log(currentFlights)
+            currentFlights.push(flightObj);
+        });
+    }
+    
     return currentFlights;
 };
-
-// // User coordinates will be lat1 and long1
-// // Nearby plane coordinates will be checked with lat2, long2
-// // to see if they are in a specified radius of the user
-const getDistanceBetweenFlightAndUser = (lat1, long1, lat2, long2) => {
-    const latlong1 = new geometry.LatLng(lat1, long1);
-    const latlong2 = new geometry.LatLng(lat2, long2);
-
-    // returns miles
-    return geometry.computeDistanceBetween(latlong1, latlong2) / 1609;
-};
-
-// // first 2 params will be input from user, last 2 params are coordinates of flight
-// // want to check if the flight is within a certain distance of the user, if the distance
-// // is too big, don't show certain flights
-// // Returns 5.7 miles away from user
-// console.log(
-//     getDistanceBetweenFlightAndUser(34.183652, -84.558952, 34.183652, -84.658952)
-// );
-
-// // go through flights and look at ones that are close
-// const proximityFlights = (arr) => {
-//     // get array, loop through and look at lat/long
-//     // compare to lat/longs from user coordinates
-//     // lat 34.183652
-//     // long -84.558952
-//     for (let i = 0; i < arr.length; i++) {
-//         let tempLat = arr[i].latitude;
-//         let tempLong = arr[i].longitude;
-//         let distance = getDistanceBetweenFlightAndUser(
-//             34.183652,
-//             -84.558952,
-//             tempLat,
-//             tempLong
-//         );
-
-//         console.log(
-//             `Distance between user and flight #${arr[i].flightNumber} from ${arr[i].departureAirport} to ${arr[i].arrivalAirport} is: ${distance} miles.`
-//         );
-//     }
-// };
-
-// proximityFlights(flightsArray);
-// // see if i can use that upper/lower bound technique to scan any flight in area, not just those departing from atl
-// // convert utc to local

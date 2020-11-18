@@ -36,13 +36,15 @@ flight-track uses a number of open source projects to work properly:
 - [axios] - promise-based HTTP client for the browser and node.js
 
 ### Work to do
-
-- Setup the front-end application with either basic HTML, React, or some framework
-- Get user geolocation from front-end and send to the back-end so that the back can acccess the user's current location
-- Working with the Google Maps API, be able to plot planes where the coordinates are
-- Click on a plane and retrieve flight information via card pop-up
 - Store flights in either SQL database or Mongo DB so that last 5 flights can be retrieved\*\*
-- Polish back-end API
+- Polish back-end api
+- Front-end:
+  - Remove old plane markers when getting new ones
+  - Clean up CSS/JS/HTML
+  - Zoom map to fit all markers
+  - Change plane and user icons
+  - Change favicon
+  - Handle previous flights
 
 \*\* Still developing what to do to meet project requirements
 

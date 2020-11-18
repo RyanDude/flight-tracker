@@ -15,7 +15,10 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(favicon('./public/favicon.ico'));
 
+// Handle homepage
 app.use('/', indexRouter);
+
+// Handle API requests
 app.use('/flights', flightRouter);
 
 app.listen(port);
