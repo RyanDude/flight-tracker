@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Flights</title>
+    <link rel="stylesheet" href="stylesheet.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+<body>
+    <div class=grid-container>
+        <div class="item1"><h1>Flight Tracker</h1></div>
+        <div class="item2">
+            <form id="get_flights_form">
+                <label for="distance">Distance</label>
+                <input type="range" min="5" max="100" value="25" id="distance" step="1" oninput="distanceUpdate(value)">
+                <output for="distance" id="distance-label">50</output>
+                <br>
+                <br>
+                <input type="submit" value="Submit">
+            </form>
+        </div>
+        <div class="item3"><div id="map"></div></div>
+    </div>
+
+    <script src="controller.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD8jva9K9mTvRMSsGXS2E-Q_ULYBYaE0SE&callback=initMap&libraries=&v=weekly" defer></script>
+</body>
+</html>

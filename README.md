@@ -43,6 +43,15 @@ flight-track uses a number of open source projects to work properly:
 - Click on a plane and retrieve flight information via card pop-up
 - Store flights in either SQL database or Mongo DB so that last 5 flights can be retrieved\*\*
 - Polish back-end API
+- Store flights in either SQL database or Mongo DB so that last 5 flights can be retrieved\*\*
+- Polish back-end api
+- Front-end:
+  - Remove old plane markers when getting new ones
+  - Clean up CSS/JS/HTML
+  - Zoom map to fit all markers
+  - Change plane and user icons
+  - Change favicon
+  - Handle previous flights
 
 \*\* Still developing what to do to meet project requirements
 
