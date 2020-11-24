@@ -4,7 +4,9 @@ const router = express();
 const flightController = require('../controllers/flightController');
 
 router.get('/', (req, res) => {
-    res.json(flightController.getFlights);
+    res.json({
+        message: "handles /post requests"
+    });
 });
 router.post('/', flightController.getFlights);
 

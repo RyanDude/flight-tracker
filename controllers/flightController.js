@@ -58,7 +58,7 @@ const getFlightInfo = (flights) => {
         states.forEach(flight => {
             let flightObj = {};
 
-            // Need? Mongo db takes care of UTC time
+            // ? Need? Mongo db takes care of UTC time
             let epochTime = new Date().getTime();
             flightObj.timeUTC = new Date(epochTime);
 
@@ -76,6 +76,5 @@ const getFlightInfo = (flights) => {
             currentFlights.push(flightObj);
         });
     }
-    console.log(currentFlights);
     return currentFlights;
 };
