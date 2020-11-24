@@ -2,6 +2,9 @@ const express = require('express');
 const router = express();
 
 const mongoController = require('../controllers/mongoController');
+const {
+    mongo
+} = require('mongoose');
 
 // Set default API response
 router.get('/test', function (req, res) {
@@ -13,8 +16,10 @@ router.get('/test', function (req, res) {
 
 // routes
 router.route('/')
-    .get(mongoController.index)
+    .get(mongoController.viewall)
     .post(mongoController.new);
 
-
+router.route('/:id')
+    .get(mongoController.viewid)
+    .delete(mongoController.delete)
 module.exports = router;

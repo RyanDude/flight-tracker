@@ -1,8 +1,8 @@
-// Import contact model
+// Import flight model
 Flight = require('../models/flightModel');
 
 // Handle index actions
-exports.index = function (req, res) {
+exports.viewall = function (req, res) {
     Flight.get(function (err, flights) {
         if (err) {
             res.json({
@@ -18,7 +18,7 @@ exports.index = function (req, res) {
     });
 };
 
-// Handle create contact actions
+// Create new flight
 exports.new = function (req, res) {
     let flight = new Flight();
 
@@ -29,10 +29,10 @@ exports.new = function (req, res) {
     flight.longitude = req.body.longitude;
     flight.latitude = req.body.latitude;
 
-    // save the contact and check for errors
+    // save the flight and check for errors
     flight.save(function (err) {
-        // if (err)
-        //     res.json(err);
+        if (err)
+            res.json(err);
         res.json({
             message: 'New flight created!',
             data: flight
@@ -40,15 +40,29 @@ exports.new = function (req, res) {
     });
 };
 
-// Handle view contact info
-exports.view = function (req, res) {
+// Handle view on id
+exports.viewid = function (req, res) {
     // findByAll???
-    Flight.findById(req.params.callsign, function (err, contact) {
+    Flight.findById(req.params.id, function (err, flight) {
         if (err)
             res.send(err);
         res.json({
             message: 'Flight details loading..',
             data: flight
+        });
+    });
+};
+
+// Delete flight given mongo-provided id
+exports.delete = function (req, res) {
+    Flight.deleteOne({
+        _id: req.params.id
+    }, function (err, flight) {
+        if (err)
+            res.send(err);
+        res.json({
+            status: "success",
+            message: 'Flight deleted'
         });
     });
 };
