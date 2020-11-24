@@ -58,11 +58,12 @@ const getFlightInfo = (flights) => {
         states.forEach(flight => {
             let flightObj = {};
 
+            // Need? Mongo db takes care of UTC time
             let epochTime = new Date().getTime();
             flightObj.timeUTC = new Date(epochTime);
 
             // Opensky uses arrays to return data
-            // Check the documentation to see what the indexs mean
+            // Check the documentation to see what the indices mean
             // https://opensky-network.org/apidoc/rest.html#operation
             flightObj.heading = flight[10];
             flightObj.callsign = flight[1];
