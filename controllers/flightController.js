@@ -1,5 +1,6 @@
 const axios = require("axios");
 const geometry = require("spherical-geometry-js");
+Flight = require("../models/flightModel");
 
 // Run when user make a request
 exports.getFlights = (req, res) => {
@@ -58,9 +59,6 @@ const getFlightInfo = (flights) => {
         states.forEach(flight => {
             let flightObj = {};
 
-            // ? Need? Mongo db takes care of UTC time
-            let epochTime = new Date().getTime();
-            flightObj.timeUTC = new Date(epochTime);
 
             // Opensky uses arrays to return data
             // Check the documentation to see what the indices mean
@@ -71,9 +69,26 @@ const getFlightInfo = (flights) => {
             flightObj.latitude = flight[6];
             flightObj.longitude = flight[5];
 
-            // We don't need to filter distances because opensky already did that
+            console.log(flightObj);
 
+            // Mongoose object
+            // * clean up code later
+            let flightMongo = new Flight();
+            flightMongo.heading = flightObj.heading;
+            flightMongo.callsign = flightObj.callsign;
+            flightMongo.originCountry = flightObj.origin_country;
+            flightMongo.latitude = flightObj.latitude;
+            flightMongo.longitude = flightObj.longitude;
+
+            // save to db
+            flightMongo.save(function (err) {
+                if (err) console.log(err);
+                console.log('New flight inserted to db: ' + flightMongo);
+            });
+
+            // We don't need to filter distances because opensky already did that
             currentFlights.push(flightObj);
+
         });
     }
     return currentFlights;
