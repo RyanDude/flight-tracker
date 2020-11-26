@@ -67,3 +67,16 @@ exports.delete = function (req, res) {
         }
     );
 };
+
+// Delete all records
+exports.deleteAll = function (req, res) {
+    Flight.deleteMany({},
+        function (err, flight) {
+            if (err) res.send(err);
+            res.json({
+                status: "success",
+                message: "Flights wiped",
+            });
+        }
+    );
+};

@@ -17,8 +17,8 @@ router.get('/test', function (req, res) {
 // routes
 router.route('/')
     .get(mongoController.viewall)
-    .post(mongoController.new);
-
+    .post(mongoController.new)
+    .delete(mongoController.deleteAll);
 router.route('/:id')
     .get(mongoController.viewid)
     .delete(mongoController.delete)

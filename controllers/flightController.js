@@ -2,6 +2,7 @@ const axios = require("axios");
 const geometry = require("spherical-geometry-js");
 Flight = require("../models/flightModel");
 
+
 // Run when user make a request
 exports.getFlights = (req, res) => {
     // If all the params were supplied
@@ -28,6 +29,15 @@ exports.getFlights = (req, res) => {
         // Botton Left corner of bounding square
         bottom_left = geometry.computeOffset(userLatLang, leg_length, 225);
 
+        // Get previous flights
+        Flight.get(function (err, prevFlights) {
+            if (err) {
+                console.log(`Error: ${err}`);
+            }
+            previousFlights = prevFlights;
+            console.log(`Previous retrieved successfully: ${previousFlights}\nLength: ${previousFlights.length}\n`);
+            return previousFlights;
+        });
         // get curent flights
         axios.get(`https://opensky-network.org/api/states/all?lamin=${bottom_left.lat()}&lomin=${bottom_left.lng()}&lamax=${top_right.lat()}&lomax=${top_right.lng()}`)
             .then((response) => {
@@ -68,8 +78,6 @@ const getFlightInfo = (flights) => {
             flightObj.origin_country = flight[2];
             flightObj.latitude = flight[6];
             flightObj.longitude = flight[5];
-
-            console.log(flightObj);
 
             // Mongoose object
             // * clean up code later
