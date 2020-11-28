@@ -14,7 +14,7 @@ let flightSchema = mongoose.Schema({
         type: Number,
         required: true,
     },
-    originCountry: String,
+    origin_country: String,
     callsign: String,
     heading: Number,
 });
