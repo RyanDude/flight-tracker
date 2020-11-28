@@ -30,7 +30,6 @@ exports.new = function (req, res) {
     flight.longitude = req.body.longitude;
     flight.latitude = req.body.latitude;
 
-    // !need to worry about duplicates
     // save the flight and check for errors
     flight.save(function (err) {
         if (err) res.json(err);

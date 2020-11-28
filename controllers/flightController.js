@@ -13,6 +13,7 @@ exports.getFlights = (req, res) => {
 
         let currentFlights = [];
         let previousFlights = []
+        let lastFiveFlights = [];
 
         // Opensky needs a bounding box to filter flights but we have a radius
         // so we need to create a square around the user.
@@ -30,15 +31,35 @@ exports.getFlights = (req, res) => {
         bottom_left = geometry.computeOffset(userLatLang, leg_length, 225);
 
         // Get previous flights
+        // Putting this before method to get current flights because we want
+        // to retrieve all flights prior to the current request
         Flight.get(function (err, prevFlights) {
             if (err) {
                 console.log(`Error: ${err}`);
             }
+
+            // Array of ALL previous flights
             previousFlights = prevFlights;
-            console.log(`Previous retrieved successfully: ${previousFlights}\nLength: ${previousFlights.length}\n`);
-            return previousFlights;
+
+            // if previousFlights is populated
+            if (previousFlights.length > 0) {
+
+                // Get last 5 flights
+                // Starting at the end of the array and getting last 5 flights
+                for (let i = previousFlights.length; i > (previousFlights.length - 6); i--) {
+                    lastFiveFlights.push(previousFlights[i]);
+                }
+                console.log(`LAST 5 FLIGHTS: ${lastFiveFlights}`);
+                return lastFiveFlights;
+
+            } else {
+                console.log("No previous flights");
+                return [];
+            }
+
         });
-        // get curent flights
+
+        // get current flights
         axios.get(`https://opensky-network.org/api/states/all?lamin=${bottom_left.lat()}&lomin=${bottom_left.lng()}&lamax=${top_right.lat()}&lomax=${top_right.lng()}`)
             .then((response) => {
                 currentFlights = getFlightInfo(response);
@@ -59,7 +80,6 @@ exports.getFlights = (req, res) => {
     }
 }
 
-// Get flight information from active planes
 const getFlightInfo = (flights) => {
     let currentFlights = [];
     let states = flights.data.states
@@ -91,7 +111,7 @@ const getFlightInfo = (flights) => {
             // save to db
             flightMongo.save(function (err) {
                 if (err) console.log(err);
-                console.log('New flight inserted to db: ' + flightMongo);
+                // console.log('New flight inserted to db: ' + flightMongo);
             });
 
             // We don't need to filter distances because opensky already did that
@@ -99,5 +119,6 @@ const getFlightInfo = (flights) => {
 
         });
     }
+    console.log(`CURRENT FLIGHTS (length ${currentFlights.length}): ${currentFlights}`);
     return currentFlights;
 };
