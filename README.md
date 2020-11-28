@@ -4,7 +4,7 @@ flight-tracker is a web application to help you find flights in your proximity. 
 
 # Get Started
 
-- Clone repository into your local environment and follow Installation below
+- Clone repository/download into your local environment and follow Installation below
 - Currently only backend API is working
 
 ### Installation
@@ -36,6 +36,7 @@ flight-track uses a number of open source projects to work properly:
 - [axios] - promise-based HTTP client for the browser and node.js
 
 ### Work to do
+
 - Store flights in either SQL database or Mongo DB so that last 5 flights can be retrieved\*\*
 - Polish back-end api
 - Front-end:
