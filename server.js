@@ -3,7 +3,6 @@ const bodyParser = require("body-parser");
 const MongoClient = require("mongodb").MongoClient;
 let mongoose = require("mongoose");
 require("dotenv").config();
-const favicon = require("serve-favicon");
 
 const indexRouter = require("./routes/indexRouter.js");
 const flightRouter = require("./routes/flightRouter.js");
@@ -33,7 +32,6 @@ app.use(
         extended: false,
     })
 );
-app.use(favicon("./public/favicon.ico"));
 
 // Handle homepage
 app.use("/", indexRouter);
