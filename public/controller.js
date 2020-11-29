@@ -98,7 +98,7 @@ function createPlaneMarkers(flights) {
         createPlaneMarker(flight);
     });
 
-    // TODO: past flights
+    setBounds();
 }
 
 // Create a marker for each planse
@@ -145,6 +145,18 @@ function createPlaneMarker(flight) {
 
     flightMarkers.push(marker);
 }
+
+// Zoom map to fit all markers
+function setBounds() {
+    let bounds = new google.maps.LatLngBounds();
+
+    flightMarkers.forEach((flightMarker) => {
+        bounds.extend(flightMarker.position);
+    });
+
+    map.fitBounds(bounds);
+}
+
 // Remove all markers from map
 function clearMarkers() {
     flightMarkers.forEach((flightMarker) => {
