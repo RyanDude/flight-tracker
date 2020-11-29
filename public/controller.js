@@ -38,18 +38,13 @@ $("#get_flights_form").submit((e) => {
 
 // When user changes radius, update the text next to it
 function distanceUpdate(distance) {
-    document.querySelector('#distance-label').value = distance;
+    document.querySelector('#distance-label').value = distance + 'mi';
 }
 
 // Get user location
 function getLocation() {
     navigator.geolocation.getCurrentPosition((pos) => {
         crd = pos.coords;
-
-        console.log('Your current position is:');
-        console.log(`Latitude : ${crd.latitude}`);
-        console.log(`Longitude: ${crd.longitude}`);
-        console.log(`More or less ${crd.accuracy} meters.`);
 
         // Center map around user and create a marker
         map.setCenter(new google.maps.LatLng(crd.latitude, crd.longitude));
