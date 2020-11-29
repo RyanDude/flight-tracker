@@ -12,8 +12,7 @@ exports.getFlights = (req, res) => {
         let user_distance = req.body.distance;
 
         let currentFlights = [];
-        let previousFlights = []
-        let lastFiveFlights = [];
+        let previousFlights = [];
 
         // Opensky needs a bounding box to filter flights but we have a radius
         // so we need to create a square around the user.
@@ -109,6 +108,6 @@ const getFlightInfo = (flights) => {
 
         });
     }
-    console.log(`CURRENT FLIGHTS (length ${currentFlights.length}): ${currentFlights}`);
+    
     return currentFlights;
 };

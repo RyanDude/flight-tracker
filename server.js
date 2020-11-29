@@ -12,6 +12,7 @@ const app = express();
 
 // DB Connection
 const uri = `mongodb+srv://mb:${process.env.MONGO_PASS}@cluster0.aiiyy.mongodb.net/flights?retryWrites=true&w=majority`;
+
 // Connect to Mongoose and set connection variable
 mongoose.connect(uri, {
     useNewUrlParser: true
