@@ -94,17 +94,24 @@ function createUserMarker() {
 // Loop through planes and creates a marker
 function createPlaneMarkers(flights) {
     clearMarkers();
+
+    // Add current flights
     flights.current_flights.forEach((flight) => {
-        createPlaneMarker(flight);
+        createPlaneMarker(flight, '#4caf50');
+    });
+
+    // Add previous flights
+    flights.previous_flights.forEach((flight) => {
+        createPlaneMarker(flight, '#2196f3');
     });
 
     setBounds();
 }
 
 // Create a marker for each planse
-function createPlaneMarker(flight) {
+function createPlaneMarker(flight, color) {
     // Convert UTC time from when flight was requested to local time
-    let localTime = new Date(Date.parse(flight.timeUTC)).toLocaleString();
+    let localTime = new Date(flight.time).toLocaleString();
 
     // Text for popup
     let contentString = `<h1>${flight.callsign}</h1>` +
