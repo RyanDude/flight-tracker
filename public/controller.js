@@ -1,6 +1,9 @@
 let map;
 let crd;
 
+
+const planeIcon = 'M 27.206 1.179 Q 29.238 3.2 29.238 10.122 L 29.238 21.27 L 50.009 35.276 L 50.173 35.392 Q 50.5 35.717 50.5 36.135 L 50.5 39.108 Q 50.5 39.526 50.173 39.852 Q 49.682 40.339 49.075 40.107 L 29.238 33.116 L 29.238 44.497 Q 36.388 48.445 36.715 48.771 Q 37.042 49.096 37.042 49.514 L 37.042 52.487 Q 37.042 52.905 36.715 53.23 Q 36.294 53.648 35.687 53.509 L 25.523 50.605 L 15.36 53.509 Q 14.752 53.695 14.308 53.253 Q 13.981 52.928 13.981 52.51 L 13.958 49.514 Q 13.958 49.096 14.285 48.771 Q 14.612 48.445 21.762 44.497 L 21.762 33.116 L 1.925 40.107 Q 1.318 40.339 0.827 39.852 Q 0.5 39.526 0.5 39.108 L 0.5 36.135 Q 0.5 35.717 0.827 35.392 Q 0.921 35.299 0.991 35.276 L 21.762 21.27 L 21.762 10.122 Q 21.762 3.2 23.794 1.179 Q 24.542 0.436 25.5 0.436 Q 26.458 0.436 27.206 1.179 Z';
+
 // Get user location
 getLocation();
 
@@ -75,8 +78,12 @@ function createUserMarker() {
         ),
         icon: {
             path: google.maps.SymbolPath.CIRCLE,
-            scale: 4,
-            strokeColor: 'blue'
+            fillColor: '#f44336',
+            fillOpacity: .6,
+            strokeWeight: 0,
+            scale: 10,
+            strokeOpacity: 1.0,
+            strokeWeight: 2
         },
 
         map: map,
@@ -116,9 +123,15 @@ function createPlaneMarker(flight) {
         ),
         title: flight.callsign,
         icon: {
-            path: google.maps.SymbolPath.BACKWARD_OPEN_ARROW,
-            scale: 4,
-            rotation: flight.heading
+            path: planeIcon,
+            fillColor: color,
+            fillOpacity: .6,
+            strokeWeight: 0,
+            scale: .7,
+            rotation: flight.heading,
+            strokeOpacity: 1.0,
+            strokeWeight: 2,
+
         },
 
         map: map,
