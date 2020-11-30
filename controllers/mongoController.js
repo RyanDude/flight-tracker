@@ -44,10 +44,32 @@ exports.viewid = function (req, res) {
     Flight.findById(req.params.id, function (err, flight) {
         if (err) res.send(err);
         res.json({
-            message: "Flight details loading..",
+            message: `Flight details for ${req.params.id} retrieved successfully`,
             data: flight,
         });
     });
+};
+
+// Get previous n flights
+// ! Function does not work
+exports.previousNflights = function (req, res) {
+    // Get limit of flights - seems to work
+    let limit = req.params.n;
+    console.log(limit);
+
+    Flight.get(function (err, prevFlights) {
+        if (err) {
+            res.json({
+                status: "error",
+                message: err,
+            });
+        }
+        res.json({
+            status: "success",
+            message: "Flights retrieved successfully",
+            data: prevFlights,
+        });
+    }, limit);
 };
 
 // ! Delete in final build? Anyone can delete if they have flight id
