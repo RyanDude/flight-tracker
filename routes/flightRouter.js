@@ -14,7 +14,6 @@ router.route('/:id')
     .get(mongoController.viewid)
 
 // Get n previous flights
-// ! Not working
 router.route('/previous/:limit')
     .get(mongoController.previousNflights)
 

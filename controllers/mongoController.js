@@ -33,11 +33,10 @@ exports.viewall = function (req, res) {
         } else {
             res.json({
                 status: "success",
-                message: "Flights retrieved successfully",
+                message: `All flights (${flights.length}) retrieved successfully`,
                 data: flights,
             });
         }
-
     });
 };
 
@@ -51,7 +50,7 @@ exports.viewid = function (req, res) {
             });
         } else {
             res.json({
-                message: `Flight details for ${req.params.id} retrieved successfully`,
+                message: `Flight details for id ${req.params.id} retrieved successfully`,
                 data: flight,
             });
         }
@@ -60,11 +59,12 @@ exports.viewid = function (req, res) {
 };
 
 // Get previous n flights
-// ! Function does not work
 exports.previousNflights = function (req, res) {
-    // Get limit of flights - seems to work
     let limit = req.params.limit;
+    // cast to int - req.params.limit gets a string, mongo requires an int
+    limit = parseInt(limit);
     console.log(limit);
+
     Flight.get(function (err, prevFlights) {
         if (err) {
             res.json({
@@ -74,7 +74,7 @@ exports.previousNflights = function (req, res) {
         } else {
             res.json({
                 status: "success",
-                message: "Flights retrieved successfully",
+                message: `Previous ${limit} flight(s) retrieved successfully`,
                 data: prevFlights,
             });
         }
