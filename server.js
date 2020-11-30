@@ -39,7 +39,7 @@ app.use(favicon("./public/favicon.ico"));
 app.use("/", indexRouter);
 
 // Handle API requests
-app.use("/flights", flightRouter);
+app.use("/api/flights", flightRouter);
 
 // test db
 const mongoRouter = require('./routes/mongoRouter.js');

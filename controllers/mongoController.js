@@ -1,28 +1,10 @@
 // Import flight model
 Flight = require("../models/flightModel");
 
-// Handle index actions
-exports.viewall = function (req, res) {
-    Flight.get(function (err, flights) {
-        if (err) {
-            res.json({
-                status: "error",
-                message: err,
-            });
-        }
-        res.json({
-            status: "success",
-            message: "Flights retrieved successfully",
-            data: flights,
-        });
-    });
-};
 
 // Create new flight
 exports.new = function (req, res) {
     let flight = new Flight();
-
-    // ? pass in time as something
 
     flight.callsign = req.body.callsign;
     flight.heading = req.body.heading;
@@ -40,9 +22,25 @@ exports.new = function (req, res) {
     });
 };
 
+// Handle index actions
+exports.viewall = function (req, res) {
+    Flight.get(function (err, flights) {
+        if (err) {
+            res.json({
+                status: "error",
+                message: err,
+            });
+        }
+        res.json({
+            status: "success",
+            message: "Flights retrieved successfully",
+            data: flights,
+        });
+    });
+};
+
 // Handle view on id
 exports.viewid = function (req, res) {
-    // findByAll???
     Flight.findById(req.params.id, function (err, flight) {
         if (err) res.send(err);
         res.json({
@@ -52,6 +50,7 @@ exports.viewid = function (req, res) {
     });
 };
 
+// ! Delete in final build? Anyone can delete if they have flight id
 // Delete flight given mongo-provided id
 exports.delete = function (req, res) {
     Flight.deleteOne({
