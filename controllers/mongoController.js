@@ -1,25 +1,12 @@
 // Import flight model
 Flight = require("../models/flightModel");
 
+// * Hide fields?
+// ! Need to do /flights/current. Put lat/long/radius in the body
 
-// Create new flight
-exports.new = function (req, res) {
-    let flight = new Flight();
-
-    flight.callsign = req.body.callsign;
-    flight.heading = req.body.heading;
-    flight.originCountry = req.body.origin_country;
-    flight.longitude = req.body.longitude;
-    flight.latitude = req.body.latitude;
-
-    // save the flight and check for errors
-    flight.save(function (err) {
-        if (err) res.json(err);
-        res.json({
-            message: "New flight created!",
-            data: flight,
-        });
-    });
+const hideFields = {
+    _id: 0,
+    __v: 0
 };
 
 // Handle index actions
@@ -60,10 +47,9 @@ exports.viewid = function (req, res) {
 
 // Get current flights
 exports.currentFlights = function (req, res) {
-    window.navigator.geolocation
-        .getCurrentPosition(console.log, console.log);
-}
+    // TODO: current flights
 
+}
 // Get previous n flights
 exports.previousNflights = function (req, res) {
     let limit = req.params.limit;
@@ -85,47 +71,4 @@ exports.previousNflights = function (req, res) {
             });
         }
     }, limit);
-};
-
-// ! Delete in final build? Anyone can delete if they have flight id
-// Delete flight given mongo-provided id
-exports.delete = function (req, res) {
-    Flight.deleteOne({
-            _id: req.params.id,
-        },
-        function (err, flight) {
-            if (err) {
-                res.json({
-                    status: "error",
-                    message: err,
-                });
-            } else {
-                res.json({
-                    status: "success",
-                    message: "Flight deleted",
-                });
-            }
-
-        }
-    );
-};
-
-// Delete all records
-exports.deleteAll = function (req, res) {
-    Flight.deleteMany({},
-        function (err, flight) {
-            if (err) {
-                res.json({
-                    status: "error",
-                    message: err,
-                })
-            } else {
-                res.json({
-                    status: "success",
-                    message: "Flights wiped",
-                });
-            }
-
-        }
-    );
 };
