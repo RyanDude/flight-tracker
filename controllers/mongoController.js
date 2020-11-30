@@ -1,28 +1,10 @@
 // Import flight model
 Flight = require("../models/flightModel");
 
-// Handle index actions
-exports.viewall = function (req, res) {
-    Flight.get(function (err, flights) {
-        if (err) {
-            res.json({
-                status: "error",
-                message: err,
-            });
-        }
-        res.json({
-            status: "success",
-            message: "Flights retrieved successfully",
-            data: flights,
-        });
-    });
-};
 
 // Create new flight
 exports.new = function (req, res) {
     let flight = new Flight();
-
-    // ? pass in time as something
 
     flight.callsign = req.body.callsign;
     flight.heading = req.body.heading;
@@ -40,29 +22,84 @@ exports.new = function (req, res) {
     });
 };
 
-// Handle view on id
-exports.viewid = function (req, res) {
-    // findByAll???
-    Flight.findById(req.params.id, function (err, flight) {
-        if (err) res.send(err);
-        res.json({
-            message: "Flight details loading..",
-            data: flight,
-        });
+// Handle index actions
+exports.viewall = function (req, res) {
+    Flight.get(function (err, flights) {
+        if (err) {
+            res.json({
+                status: "error",
+                message: err,
+            });
+        } else {
+            res.json({
+                status: "success",
+                message: `All flights (${flights.length}) retrieved successfully`,
+                data: flights,
+            });
+        }
     });
 };
 
+// Handle view on id
+exports.viewid = function (req, res) {
+    Flight.findById(req.params.id, function (err, flight) {
+        if (err) {
+            res.json({
+                status: "error",
+                message: err,
+            });
+        } else {
+            res.json({
+                message: `Flight details for id ${req.params.id} retrieved successfully`,
+                data: flight,
+            });
+        }
+
+    });
+};
+
+// Get previous n flights
+exports.previousNflights = function (req, res) {
+    let limit = req.params.limit;
+    // cast to int - req.params.limit gets a string, mongo requires an int
+    limit = parseInt(limit);
+    console.log(limit);
+
+    Flight.get(function (err, prevFlights) {
+        if (err) {
+            res.json({
+                status: "error",
+                message: err,
+            });
+        } else {
+            res.json({
+                status: "success",
+                message: `Previous ${limit} flight(s) retrieved successfully`,
+                data: prevFlights,
+            });
+        }
+    }, limit);
+};
+
+// ! Delete in final build? Anyone can delete if they have flight id
 // Delete flight given mongo-provided id
 exports.delete = function (req, res) {
     Flight.deleteOne({
             _id: req.params.id,
         },
         function (err, flight) {
-            if (err) res.send(err);
-            res.json({
-                status: "success",
-                message: "Flight deleted",
-            });
+            if (err) {
+                res.json({
+                    status: "error",
+                    message: err,
+                });
+            } else {
+                res.json({
+                    status: "success",
+                    message: "Flight deleted",
+                });
+            }
+
         }
     );
 };
@@ -71,11 +108,18 @@ exports.delete = function (req, res) {
 exports.deleteAll = function (req, res) {
     Flight.deleteMany({},
         function (err, flight) {
-            if (err) res.send(err);
-            res.json({
-                status: "success",
-                message: "Flights wiped",
-            });
+            if (err) {
+                res.json({
+                    status: "error",
+                    message: err,
+                })
+            } else {
+                res.json({
+                    status: "success",
+                    message: "Flights wiped",
+                });
+            }
+
         }
     );
 };

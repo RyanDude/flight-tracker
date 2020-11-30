@@ -38,11 +38,8 @@ app.use(
 app.use("/", indexRouter);
 
 // Handle API requests
-app.use("/flights", flightRouter);
+app.use("/api/flights", flightRouter);
 
-// test db
-const mongoRouter = require('./routes/mongoRouter.js');
-app.use('/mongo', mongoRouter);
 
 app.listen(port);
 
