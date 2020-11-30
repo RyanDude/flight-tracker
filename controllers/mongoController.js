@@ -30,23 +30,32 @@ exports.viewall = function (req, res) {
                 status: "error",
                 message: err,
             });
+        } else {
+            res.json({
+                status: "success",
+                message: "Flights retrieved successfully",
+                data: flights,
+            });
         }
-        res.json({
-            status: "success",
-            message: "Flights retrieved successfully",
-            data: flights,
-        });
+
     });
 };
 
 // Handle view on id
 exports.viewid = function (req, res) {
     Flight.findById(req.params.id, function (err, flight) {
-        if (err) res.send(err);
-        res.json({
-            message: `Flight details for ${req.params.id} retrieved successfully`,
-            data: flight,
-        });
+        if (err) {
+            res.json({
+                status: "error",
+                message: err,
+            });
+        } else {
+            res.json({
+                message: `Flight details for ${req.params.id} retrieved successfully`,
+                data: flight,
+            });
+        }
+
     });
 };
 
@@ -54,21 +63,21 @@ exports.viewid = function (req, res) {
 // ! Function does not work
 exports.previousNflights = function (req, res) {
     // Get limit of flights - seems to work
-    let limit = req.params.n;
+    let limit = req.params.limit;
     console.log(limit);
-
     Flight.get(function (err, prevFlights) {
         if (err) {
             res.json({
                 status: "error",
                 message: err,
             });
+        } else {
+            res.json({
+                status: "success",
+                message: "Flights retrieved successfully",
+                data: prevFlights,
+            });
         }
-        res.json({
-            status: "success",
-            message: "Flights retrieved successfully",
-            data: prevFlights,
-        });
     }, limit);
 };
 
@@ -79,11 +88,18 @@ exports.delete = function (req, res) {
             _id: req.params.id,
         },
         function (err, flight) {
-            if (err) res.send(err);
-            res.json({
-                status: "success",
-                message: "Flight deleted",
-            });
+            if (err) {
+                res.json({
+                    status: "error",
+                    message: err,
+                });
+            } else {
+                res.json({
+                    status: "success",
+                    message: "Flight deleted",
+                });
+            }
+
         }
     );
 };
@@ -92,11 +108,18 @@ exports.delete = function (req, res) {
 exports.deleteAll = function (req, res) {
     Flight.deleteMany({},
         function (err, flight) {
-            if (err) res.send(err);
-            res.json({
-                status: "success",
-                message: "Flights wiped",
-            });
+            if (err) {
+                res.json({
+                    status: "error",
+                    message: err,
+                })
+            } else {
+                res.json({
+                    status: "success",
+                    message: "Flights wiped",
+                });
+            }
+
         }
     );
 };

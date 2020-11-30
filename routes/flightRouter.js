@@ -15,7 +15,7 @@ router.route('/:id')
 
 // Get n previous flights
 // ! Not working
-router.route('/previous/:n')
+router.route('/previous/:limit')
     .get(mongoController.previousNflights)
 
 router.post('/', flightController.getFlights);
