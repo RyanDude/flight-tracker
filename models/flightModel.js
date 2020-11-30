@@ -14,7 +14,7 @@ let flightSchema = mongoose.Schema({
         type: Number,
         required: true,
     },
-    originCountry: String,
+    origin_country: String,
     callsign: String,
     heading: Number,
 });
@@ -22,5 +22,5 @@ let flightSchema = mongoose.Schema({
 // Export Flight model
 let Flight = (module.exports = mongoose.model("flight", flightSchema));
 module.exports.get = function (callback, limit) {
-    Flight.find(callback).limit(limit);
+    Flight.find(callback).sort({'_id': -1}).limit(limit);
 };

@@ -12,8 +12,7 @@ exports.getFlights = (req, res) => {
         let user_distance = req.body.distance;
 
         let currentFlights = [];
-        let previousFlights = []
-        let lastFiveFlights = [];
+        let previousFlights = [];
 
         // Opensky needs a bounding box to filter flights but we have a radius
         // so we need to create a square around the user.
@@ -36,28 +35,13 @@ exports.getFlights = (req, res) => {
         Flight.get(function (err, prevFlights) {
             if (err) {
                 console.log(`Error: ${err}`);
+                res.sendStatus(500);
             }
 
-            // Array of ALL previous flights
+            // Array of last 5 previous flights
             previousFlights = prevFlights;
 
-            // if previousFlights is populated
-            if (previousFlights.length > 0) {
-
-                // Get last 5 flights
-                // Starting at the end of the array and getting last 5 flights
-                for (let i = previousFlights.length; i > (previousFlights.length - 6); i--) {
-                    lastFiveFlights.push(previousFlights[i]);
-                }
-                console.log(`LAST 5 FLIGHTS: ${lastFiveFlights}`);
-                return lastFiveFlights;
-
-            } else {
-                console.log("No previous flights");
-                return [];
-            }
-
-        });
+        }, 5);
 
         // get current flights
         axios.get(`https://opensky-network.org/api/states/all?lamin=${bottom_left.lat()}&lomin=${bottom_left.lng()}&lamax=${top_right.lat()}&lomax=${top_right.lng()}`)
@@ -73,7 +57,7 @@ exports.getFlights = (req, res) => {
             })
             .catch((error) => {
                 console.log(error);
-                res.sendStatus(500)
+                res.sendStatus(500);
             });
     } else {
         res.sendStatus(400)
@@ -89,6 +73,7 @@ const getFlightInfo = (flights) => {
         states.forEach(flight => {
             let flightObj = {};
 
+            flightObj.time = new Date().getTime();
 
             // Opensky uses arrays to return data
             // Check the documentation to see what the indices mean
@@ -104,13 +89,17 @@ const getFlightInfo = (flights) => {
             let flightMongo = new Flight();
             flightMongo.heading = flightObj.heading;
             flightMongo.callsign = flightObj.callsign;
-            flightMongo.originCountry = flightObj.origin_country;
+            flightMongo.origin_country = flightObj.origin_country;
             flightMongo.latitude = flightObj.latitude;
             flightMongo.longitude = flightObj.longitude;
+            flightMongo.time = flightObj.time;
 
             // save to db
             flightMongo.save(function (err) {
-                if (err) console.log(err);
+                if (err) {
+                    console.log(err);
+                    res.sendStatus(500);
+                }
                 // console.log('New flight inserted to db: ' + flightMongo);
             });
 
@@ -119,6 +108,6 @@ const getFlightInfo = (flights) => {
 
         });
     }
-    console.log(`CURRENT FLIGHTS (length ${currentFlights.length}): ${currentFlights}`);
+    
     return currentFlights;
 };

@@ -3,7 +3,6 @@ const bodyParser = require("body-parser");
 const MongoClient = require("mongodb").MongoClient;
 let mongoose = require("mongoose");
 require("dotenv").config();
-const favicon = require("serve-favicon");
 
 const indexRouter = require("./routes/indexRouter.js");
 const flightRouter = require("./routes/flightRouter.js");
@@ -13,6 +12,7 @@ const app = express();
 
 // DB Connection
 const uri = `mongodb+srv://mb:${process.env.MONGO_PASS}@cluster0.aiiyy.mongodb.net/flights?retryWrites=true&w=majority`;
+
 // Connect to Mongoose and set connection variable
 mongoose.connect(uri, {
     useNewUrlParser: true
@@ -33,7 +33,6 @@ app.use(
         extended: false,
     })
 );
-app.use(favicon("./public/favicon.ico"));
 
 // Handle homepage
 app.use("/", indexRouter);
