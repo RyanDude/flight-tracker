@@ -58,6 +58,12 @@ exports.viewid = function (req, res) {
     });
 };
 
+// Get current flights
+exports.currentFlights = function (req, res) {
+    window.navigator.geolocation
+        .getCurrentPosition(console.log, console.log);
+}
+
 // Get previous n flights
 exports.previousNflights = function (req, res) {
     let limit = req.params.limit;

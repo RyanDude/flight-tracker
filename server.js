@@ -38,8 +38,7 @@ app.use(
 app.use("/", indexRouter);
 
 // Handle API requests
-app.use("/api/flights", flightRouter);
-
+app.use("/flights", flightRouter);
 
 app.listen(port);
 
