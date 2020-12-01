@@ -1,14 +1,6 @@
 // Import flight model
 Flight = require("../models/flightModel");
 
-// * Hide fields?
-// ! Need to do /flights/current. Put lat/long/radius in the body
-
-const hideFields = {
-    _id: 0,
-    __v: 0
-};
-
 // Handle index actions
 exports.viewall = function (req, res) {
     Flight.get(function (err, flights) {
@@ -41,15 +33,9 @@ exports.viewid = function (req, res) {
                 data: flight,
             });
         }
-
     });
 };
 
-// Get current flights
-exports.currentFlights = function (req, res) {
-    // TODO: current flights
-
-}
 // Get previous n flights
 exports.previousNflights = function (req, res) {
     let limit = req.params.limit;
