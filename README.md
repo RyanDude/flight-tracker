@@ -30,20 +30,29 @@ node start will run the index.js file. It currently takes in a set of hard-coded
 flight-track uses a number of open source projects to work properly:
 
 - [node.js] - evented I/O for the backend
-- [express] - fast node.js network app framework [@tjholowaychuk]
+- [express] - fast node.js network app framework
 - [spherical-geometry-js] - to perform coordinate calculations
 - [dotenv] - hide api keys
 - [axios] - promise-based HTTP client for the browser and node.js
+- [mongodb] - no-sql database
+- [mongoose] - framework for mongodb
+- [body-parser] - node.js body-parsing middleware
+- [ejs] - html templating language with javascript
 
 ### Work to do
+
 - Polish back-end api
 - Front-end:
   - Clean up CSS/JS/HTML
 
 \*\* Still developing what to do to meet project requirements
 
-[dotenv]: https://www.npmjs.com/package/dotenv
-[axios]: https://www.npmjs.com/package/axios
-[spherical-geometry-js]: https://www.npmjs.com/package/spherical-geometry-js
 [node.js]: http://nodejs.org
 [express]: http://expressjs.com
+[spherical-geometry-js]: https://www.npmjs.com/package/spherical-geometry-js
+[dotenv]: https://www.npmjs.com/package/dotenv
+[axios]: https://www.npmjs.com/package/axios
+[mongodb]: https://www.mongodb.com/
+[mongoose]: https://www.npmjs.com/package/mongoose
+[body-parser]: https://www.npmjs.com/package/body-parser
+[ejs]: https://www.npmjs.com/package/ejs
