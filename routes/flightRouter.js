@@ -4,7 +4,7 @@ const router = express();
 const flightController = require('../controllers/flightController');
 const mongoController = require('../controllers/mongoController');
 
-// Goes to /api/flights/whatever
+// Goes to /flights/whatever
 // Get all flights
 router.route('/')
     .get(mongoController.viewall)
@@ -18,5 +18,8 @@ router.route('/previous/:limit')
     .get(mongoController.previousNflights)
 
 router.post('/', flightController.getFlights);
+
+// User must enter a lat/long/distance in order to get current flights around them
+router.post('/current', flightController.getFlights);
 
 module.exports = router;
